@@ -14,3 +14,5 @@ python3 script.py
 ```
 
 For this to work properly this requires some changes to name-your-contributors that haven't been merged yet (primarily getting issueComments as well as just commitComments).
+
+TODO: refactor so that contribs.csv will display all of the different types of contributions in different columns, alongside a totals column.

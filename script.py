@@ -8,7 +8,7 @@ DATE_PARSE = '%Y-%m-%dT%H:%M:%SZ'
 
 TIMEDELTA = relativedelta(months=1)
 
-GATHER = ['commits'] # ['pullRequests', 'commitComments', 'issues', 'issueComments']
+GATHER = ['commits', 'pullRequests', 'commitComments', 'issues', 'issueComments'] # ['commits', 'pullRequests', 'commitComments', 'issues', 'issueComments']
 CUMULATIVE = True
 
 with open('orbit-db-contribs.json') as json_data:
@@ -46,10 +46,16 @@ with open('orbit-db-contribs.json') as json_data:
         next_week = current_date + TIMEDELTA
 
         objects_this_week = []
+        authors_this_week = []
+
         if CUMULATIVE and len(by_weeks) > 0:
           objects_this_week = by_weeks[-1]['objects'][:]
+          authors_this_week = list(set(by_weeks[-1]['authors'][:]))
 
         for obj in sorted_objects[start_index:]:
+          authors_this_week.append(obj[2])
+          authors_this_week = list(set(authors_this_week))
+
           obj_date = datetime.strptime(obj[3], DATE_PARSE)
           if obj_date < next_week and obj_date >= current_date:
             objects_this_week.append(obj)
@@ -60,13 +66,14 @@ with open('orbit-db-contribs.json') as json_data:
 
         by_weeks.append({
           'week': current_date,
-          'objects': objects_this_week
+          'objects': objects_this_week,
+          'authors': authors_this_week
         })
         current_date = next_week
 
       contribswriter = csv.writer(csvfile, quotechar='|', quoting=csv.QUOTE_MINIMAL)
-      contribswriter.writerow(['week', 'contributions'])
+      contribswriter.writerow(['week', 'contributions', 'authors'])
       for week in by_weeks:
-        contribswriter.writerow([week['week'], len(week['objects'])])
+        contribswriter.writerow([week['week'], len(week['objects']), len(week['authors'])])
 
 print('done')
