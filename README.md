@@ -2,7 +2,7 @@
 First get the json
 
 ```
-name-your-contributors -o orbitdb --full > orbit-db-contribs.json
+name-your-contributors -o orbitdb --full --commits > orbit-db-contribs.json
 ```
 
 We need to use full to get the createdAt and breakdown of each thing, but this won't send to csv because there's nesting

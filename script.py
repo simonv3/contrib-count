@@ -8,7 +8,7 @@ DATE_PARSE = '%Y-%m-%dT%H:%M:%SZ'
 
 TIMEDELTA = relativedelta(months=1)
 
-GATHER = ['issueComments', 'commitComments'] # ['pullRequests', 'commitComments', 'issues', 'issueComments']
+GATHER = ['commits'] # ['pullRequests', 'commitComments', 'issues', 'issueComments']
 CUMULATIVE = True
 
 with open('orbit-db-contribs.json') as json_data:
@@ -20,8 +20,13 @@ with open('orbit-db-contribs.json') as json_data:
       # get all objects (prs, issues, comments) sorted by date
       for repository in d['organization']['repositories']:
         for obj_type in GATHER:
-          for obj in repository[obj_type]:
-            objects.append((repository['name'], obj_type, obj['author']['name'] if obj['author'] else 'None', obj['createdAt']))
+          if obj_type != 'commits':
+            for obj in repository[obj_type]:
+              objects.append((repository['name'], obj_type, obj['author']['name'] if obj['author'] else 'None', obj['createdAt']))
+
+        if 'commits' in GATHER:
+          for obj in repository['ref']['target']['history']:
+            objects.append((repository['name'], 'commits', obj['author']['user']['name'] if obj['author'] and obj['author']['user'] else 'None', obj['committedDate']))
 
       sorted_objects = sorted(objects, key=lambda object: object[3])
 
