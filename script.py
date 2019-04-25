@@ -1,5 +1,6 @@
 import json
 import csv
+import sys
 from datetime import datetime
 from datetime import timedelta
 from dateutil.relativedelta import relativedelta
@@ -11,7 +12,7 @@ TIMEDELTA = relativedelta(months=1)
 GATHER = ['commits', 'pullRequests', 'commitComments', 'issues', 'issueComments'] # ['commits', 'pullRequests', 'commitComments', 'issues', 'issueComments']
 CUMULATIVE = True
 
-with open('orbit-db-contribs.json') as json_data:
+with open(sys.argv[1]) as json_data:
     d = json.load(json_data)
     with open('contribs.csv', 'w', newline='') as csvfile:
 
